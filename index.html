@@ -81,7 +81,7 @@ tr.fail td{color:var(--muted)}
    <button class="b" id="b-clear">맵 비우기</button>
    <button class="b" id="b-throw">경로 방해</button>
   </div>
-  <div class="rh"><h2>순위</h2><button class="b s" id="b-sort"></button></div>
+  <div class="rh"><h2>순위</h2><div style="display:flex;gap:6px"><button class="b s" id="b-rrank">순위 초기화</button><button class="b s" id="b-sort"></button></div></div>
   <div class="tw"><table>
    <thead><tr><th>순위</th><th>알고리즘</th><th>탐색 노드</th><th>연산 시간</th><th>이동</th><th>재탐색</th></tr></thead>
    <tbody id="rank"></tbody>
@@ -180,6 +180,7 @@ Object.keys(ALGOS).forEach(a=>{const b=document.createElement("button");b.classN
  b.onclick=()=>{if(!running){sel=a;sync()}};$("tabs").appendChild(b)});
 $("b-start").onclick=start;$("b-reset").onclick=resetPawn;$("b-rand").onclick=randMap;$("b-clear").onclick=clearMap;$("b-throw").onclick=throwObs;
 $("b-sort").onclick=()=>{sortIdx=(sortIdx+1)%SORTS.length;sync()};
+$("b-rrank").onclick=()=>{ranking=[];msg="순위를 초기화했어요";sync()};
 let drag=null,lastCell=-1;
 function cellAt(e){const r=cv.getBoundingClientRect(),c=Math.floor((e.clientX-r.left)/r.width*C),rr=Math.floor((e.clientY-r.top)/r.height*R);
  return c<0||c>=C||rr<0||rr>=R?-1:idx(rr,c)}
