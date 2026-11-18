@@ -19,68 +19,73 @@ main{display:grid;grid-template-columns:minmax(0,560px) minmax(0,1fr);gap:32px;p
 #cv{width:100%;aspect-ratio:1;display:block;border:1px solid var(--line);touch-action:none;cursor:pointer}
 .legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;font-size:12px;color:var(--muted)}
 .legend i{display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px}
+.hint{font-size:12px;color:var(--muted);margin:10px 0 0;line-height:1.5}
 .lbl{font-size:12px;color:var(--muted);margin-bottom:6px}
-.tabs{display:flex;gap:22px;border-bottom:1px solid var(--line);margin-bottom:20px;overflow-x:auto}
-.tab{background:none;border:0;border-bottom:2px solid transparent;padding:6px 0 10px;font:inherit;font-size:16px;color:var(--muted);cursor:pointer;margin-bottom:-1px}
-.tab[aria-pressed="true"]{color:var(--acc);border-color:var(--acc);font-weight:600}
-.tab:disabled{cursor:default;opacity:.6}
-.trow{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--line)}
-.big{font-size:56px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.alg{display:grid;grid-template-columns:22px 92px minmax(80px,1fr) 64px;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--hair);font-size:15px}
+.alg input[type=checkbox]{width:18px;height:18px;margin:0;cursor:pointer}
+.alg input[type=range]{width:100%;margin:0}
+.alg output{font-size:12px;color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px;vertical-align:0}
+.trow{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-top:18px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.big{font-size:52px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
 .big span{font-size:20px;font-weight:400;color:var(--muted);margin-left:6px}
-.stats{display:grid;grid-template-columns:repeat(2,minmax(110px,1fr));gap:10px 28px;margin:0}
-.stats dt{font-size:11px;color:var(--muted)}
-.stats dd{margin:2px 0 0;font-size:16px;font-weight:600;font-variant-numeric:tabular-nums}
-.btns{display:flex;gap:8px;flex-wrap:wrap;padding:18px 0;border-bottom:1px solid var(--line)}
-button.b{font:inherit;font-size:14px;height:40px;padding:0 16px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.chk{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center;cursor:pointer}
+.btns{display:flex;gap:8px;flex-wrap:wrap;padding:16px 0;border-bottom:1px solid var(--line)}
+button.b{font:inherit;font-size:14px;height:40px;padding:0 14px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
 button.b:hover{background:var(--hair)}
+button.b[aria-pressed="true"]{border-color:var(--acc);color:var(--acc);font-weight:600}
 button.p{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600;min-width:90px}
 button.p:hover{background:var(--acc2)}
+button.b:disabled{opacity:.5;cursor:default}
 .rh{display:flex;justify-content:space-between;align-items:center;margin:18px 0 8px}
 h2{margin:0;font-size:15px}
 button.s{height:30px;font-size:12px;padding:0 12px;border-radius:6px}
 .tw{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums;min-width:420px}
+table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums;min-width:460px}
 th{font-size:11px;font-weight:400;color:var(--muted);text-align:right;padding:6px 6px;border-bottom:1px solid var(--line)}
-td{text-align:right;padding:9px 6px;border-bottom:1px solid var(--hair)}
+td{text-align:right;padding:8px 6px;border-bottom:1px solid var(--hair)}
 th:nth-child(-n+2),td:nth-child(-n+2){text-align:left}
-tr.top td{color:var(--acc);font-weight:600}
+tr.top td{font-weight:600}
 tr.fail td{color:var(--muted)}
 .msg{font-size:13px;color:var(--muted);margin:14px 0 0;min-height:20px}
 </style>
 </head>
 <body>
-<header><h1>길찾기 알고리즘 비교</h1><p>같은 맵, 같은 장애물에서 알고리즘별 성능 측정</p></header>
+<header><h1>길찾기 알고리즘 비교</h1><p>같은 맵, 같은 장애물에서 여러 알고리즘을 동시에 실행해 비교</p></header>
 <main>
  <section>
   <canvas id="cv" aria-label="길찾기 격자 맵"></canvas>
   <div class="legend">
-   <span><i style="background:var(--acc);border-radius:50%"></i>기물</span>
    <span><i style="border:2px solid var(--ink);border-radius:50%"></i>출발</span>
    <span><i style="background:var(--ink);border-radius:2px"></i>도착</span>
    <span><i style="background:var(--wall)"></i>장애물</span>
-   <span><i style="background:var(--acc);opacity:.4;border-radius:2px"></i>예상 경로</span>
-   <span><i style="background:var(--acc);opacity:.12"></i>탐색 영역</span>
+   <span><i style="height:4px;background:var(--muted);vertical-align:2px"></i>지나온 길</span>
+   <span><i style="height:0;border-top:2px dashed var(--muted);vertical-align:3px"></i>예상 경로</span>
+   <span><i style="background:var(--muted);opacity:.25"></i>탐색 영역</span>
   </div>
+  <p class="hint">격자를 클릭하거나 드래그하면 장애물을 놓고 지울 수 있어요. 출발·도착 지점은 오른쪽 버튼으로 고르거나, 격자의 출발·도착 표시를 끌어서 옮길 수 있어요.</p>
  </section>
  <section>
-  <div class="lbl">알고리즘</div>
-  <div class="tabs" id="tabs"></div>
+  <div class="lbl">알고리즘 (여러 개 선택 · 알고리즘마다 이동 속도 조절)</div>
+  <div id="algs"></div>
   <div class="trow">
-   <div><div class="lbl">경과 시간</div><div class="big"><b id="tm" style="font-weight:600">00.00</b><span>초</span></div></div>
-   <dl class="stats">
-    <div><dt>연산 시간</dt><dd id="s-ms">0.00 ms</dd></div>
-    <div><dt>탐색 노드</dt><dd id="s-nodes">0</dd></div>
-    <div><dt>이동 칸수</dt><dd id="s-steps">0</dd></div>
-    <div><dt>재탐색</dt><dd id="s-re">0회</dd></div>
-   </dl>
+   <div><div class="lbl">전체 경과 시간</div><div class="big"><b id="tm" style="font-weight:600">00.00</b><span>초</span></div></div>
+   <label class="chk"><input type="checkbox" id="showvis" checked>탐색 영역 표시</label>
   </div>
   <div class="btns">
    <button class="b p" id="b-start">시작</button>
-   <button class="b" id="b-reset">기물 리셋</button>
+   <button class="b" id="b-reset">경로 리셋</button>
    <button class="b" id="b-rand">랜덤 맵</button>
    <button class="b" id="b-clear">맵 비우기</button>
    <button class="b" id="b-throw">경로 방해</button>
+   <button class="b" id="b-pstart" aria-pressed="false">출발 지점 선택</button>
+   <button class="b" id="b-pgoal" aria-pressed="false">도착 지점 선택</button>
   </div>
+  <div class="rh"><h2>실행 현황</h2></div>
+  <div class="tw"><table>
+   <thead><tr><th>알고리즘</th><th>상태</th><th>시간(초)</th><th>탐색 노드</th><th>연산(ms)</th><th>이동</th><th>재탐색</th></tr></thead>
+   <tbody id="live"></tbody>
+  </table></div>
   <div class="rh"><h2>순위</h2><div style="display:flex;gap:6px"><button class="b s" id="b-rrank">순위 초기화</button><button class="b s" id="b-sort"></button></div></div>
   <div class="tw"><table>
    <thead><tr><th>순위</th><th>알고리즘</th><th>탐색 노드</th><th>연산 시간</th><th>이동</th><th>재탐색</th></tr></thead>
@@ -90,8 +95,10 @@ tr.fail td{color:var(--muted)}
  </section>
 </main>
 <script>
-const R=20,C=20,N=R*C,STEP=70,DENS=.22;
-const idx=(r,c)=>r*C+c, START=idx(10,0), GOAL=idx(10,19);
+const R=20,C=20,N=R*C,DENS=.22;
+const idx=(r,c)=>r*C+c;
+let START=idx(10,0),GOAL=idx(10,19);
+const ALG=[["BFS","#2563eb"],["DFS","#8b5cf6"],["Dijkstra","#f59e0b"],["A*","#10b981"]];
 const SORTS=[["탐색 노드","nodes"],["연산 시간","ms"],["이동 칸수","steps"]];
 const $=id=>document.getElementById(id);
 const cv=$("cv"),ctx=cv.getContext("2d");
@@ -121,75 +128,116 @@ function best(s,g,useH){const gs=new Array(N).fill(Infinity),par=new Array(N).fi
  return{path:null,visited:vis}}
 const ALGOS={BFS:bfs,DFS:dfs,Dijkstra:(s,g)=>best(s,g,false),"A*":(s,g)=>best(s,g,true)};
 
-/* ---------- 게임 상태 ---------- */
-let sel="BFS",sortIdx=0,ranking=[],msg="알고리즘을 고르고 [시작]을 누르세요 · 격자를 클릭하거나 드래그하면 장애물을 놓을 수 있어요";
-let pawn,path,visited,running,finished,t0,t1,last,st;
-function resetRun(){pawn=START;path=[];visited=[];running=false;finished=false;t0=t1=last=0;st={ms:0,nodes:0,steps:0,re:0}}
-function plan(isRe){const t=performance.now(),res=ALGOS[sel](pawn,GOAL);
- st.ms+=performance.now()-t;st.nodes+=res.visited.length;if(isRe)st.re++;visited=res.visited;
- if(!res.path){path=[];finish(false);return false}path=res.path;return true}
-function start(){if(running)return;resetRun();running=true;t0=last=performance.now();msg=sel+" 실행 중 · 격자를 클릭해 장애물을 놓아보세요";plan(false);sync()}
-function step(){if(path.length>1){path.shift();pawn=path[0];st.steps++}if(pawn===GOAL)finish(true)}
-function finish(ok){running=false;finished=true;t1=performance.now();
- ranking.push({name:sel,ok,...st});if(ranking.length>12)ranking.shift();
- msg=ok?"도착! 결과가 순위에 기록되었어요":"길이 막혀서 실패로 기록되었어요";renderRank();sync()}
-function toggle(i,force){if(i===START||i===GOAL||i===pawn)return;
+/* ---------- 상태 ---------- */
+const enabled={BFS:true,DFS:true,Dijkstra:true,"A*":true};
+const speeds={BFS:14,DFS:14,Dijkstra:14,"A*":14};
+let runners=[],running=false,sortIdx=0,ranking=[],pick=null,tAll0=0,tAll1=0,lastT=0;
+let msg="알고리즘을 고르고 [시작]을 누르세요 · 여러 개를 동시에 선택할 수 있어요";
+
+function resetRun(){running=false;tAll0=tAll1=0;
+ runners=ALG.filter(([n])=>enabled[n]).map(([n,c])=>({name:n,color:c,pawn:START,path:[],visited:[],trail:[START],
+  st:{ms:0,nodes:0,steps:0,re:0},status:"대기",done:false,ok:false,t0:0,t1:0,acc:0}))}
+function plan(r,isRe){const t=performance.now(),res=ALGOS[r.name](r.pawn,GOAL);
+ r.st.ms+=performance.now()-t;r.st.nodes+=res.visited.length;if(isRe)r.st.re++;r.visited=res.visited;
+ if(!res.path){r.path=[];finishR(r,false);return false}r.path=res.path;return true}
+function start(){if(running)return;pick=null;
+ if(!ALG.some(([n])=>enabled[n])){msg="알고리즘을 하나 이상 선택하세요";sync();return}
+ resetRun();running=true;const now=performance.now();tAll0=now;
+ runners.forEach(r=>{r.status="진행 중";r.t0=now;plan(r,false)});
+ if(running)msg=runners.map(r=>r.name).join(" · ")+" 실행 중 · 격자를 클릭해 장애물을 놓아보세요";sync()}
+function stepR(r){if(r.path.length>1){r.path.shift();r.pawn=r.path[0];r.trail.push(r.pawn);r.st.steps++}
+ if(r.pawn===GOAL)finishR(r,true)}
+function finishR(r,ok){r.done=true;r.ok=ok;r.status=ok?"도착":"실패";r.t1=performance.now();
+ ranking.push({name:r.name,color:r.color,ok,...r.st});if(ranking.length>24)ranking.shift();
+ if(runners.every(x=>x.done)){running=false;tAll1=performance.now();msg="모든 알고리즘이 끝났어요 · 아래 순위를 확인해 보세요"}
+ renderRank();sync()}
+
+/* ---------- 맵 조작 ---------- */
+function toggle(i,force){if(i===START||i===GOAL||runners.some(r=>r.pawn===i))return;
  const has=obs.has(i);if(force==="add"&&has||force==="del"&&!has)return;
  if(has){obs.delete(i);return}obs.add(i);
- if(running&&path.includes(i)&&plan(true))msg="경로가 막혀서 "+sel+"가 다시 탐색했어요"}
-function randMap(){if(running)return;resetRun();obs.clear();
+ if(running)runners.forEach(r=>{if(!r.done&&r.path.includes(i)&&plan(r,true))msg="경로가 막혀서 "+r.name+"가 다시 탐색했어요"})}
+function moveMarker(which,i){if(running||i<0)return;const other=which==="start"?GOAL:START;if(i===other)return;
+ obs.delete(i);if(which==="start")START=i;else GOAL=i;resetRun()}
+function randMap(){if(running)return;obs.clear();
  for(let i=0;i<N;i++)if(i!==START&&i!==GOAL&&Math.random()<DENS)obs.add(i);
- msg="랜덤 맵 생성 · 같은 맵에서 알고리즘을 바꿔가며 비교해보세요";sync()}
-function clearMap(){if(running)return;resetRun();obs.clear();msg="맵을 비웠어요";sync()}
-function resetPawn(){resetRun();msg="기물을 처음 위치로 돌렸어요 (맵은 유지)";sync()}
-function throwObs(){if(!running||path.length<4){msg="경로 방해는 실행 중일 때만 사용할 수 있어요";sync();return}
- const c=path.slice(2,-1);toggle(c[(Math.random()*c.length)|0]);sync()}
+ resetRun();msg="랜덤 맵 생성 · 같은 맵에서 알고리즘들을 한꺼번에 비교해보세요";sync()}
+function clearMap(){if(running)return;obs.clear();resetRun();msg="맵을 비웠어요";sync()}
+function resetPath(){pick=null;resetRun();msg="모든 기물을 출발 지점으로 되돌렸어요 (맵은 유지)";sync()}
+function throwObs(){const a=runners.filter(r=>!r.done&&r.path.length>=4);
+ if(!running||!a.length){msg="경로 방해는 실행 중일 때만 사용할 수 있어요";sync();return}
+ const r=a[(Math.random()*a.length)|0],c=r.path.slice(2,-1);toggle(c[(Math.random()*c.length)|0]);sync()}
+function setPick(w){if(running){msg="실행 중에는 바꿀 수 없어요";sync();return}
+ pick=pick===w?null:w;msg=pick?(pick==="start"?"격자에서 출발 지점을 클릭하세요":"격자에서 도착 지점을 클릭하세요"):"선택을 취소했어요";sync()}
 
-/* ---------- 화면 ---------- */
+/* ---------- 그리기 ---------- */
 function css(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim()}
 function draw(){const w=cv.clientWidth,dpr=window.devicePixelRatio||1;
  if(cv.width!==Math.round(w*dpr)){cv.width=cv.height=Math.round(w*dpr)}
- ctx.setTransform(dpr,0,0,dpr,0,0);const cs=w/C,acc=css("--acc"),ink=css("--ink");
+ ctx.setTransform(dpr,0,0,dpr,0,0);const cs=w/C,ink=css("--ink"),n=runners.length;
+ const ctr=i=>[(i%C)*cs+cs/2,((i/C)|0)*cs+cs/2];
  ctx.fillStyle=css("--gridbg");ctx.fillRect(0,0,w,w);
- ctx.fillStyle=acc;ctx.globalAlpha=.1;for(const i of visited)ctx.fillRect((i%C)*cs,((i/C)|0)*cs,cs,cs);
- ctx.globalAlpha=.4;const pad=cs*.32;
- for(const i of path){ctx.beginPath();const x=(i%C)*cs+pad,y=((i/C)|0)*cs+pad,s=cs-2*pad;
-  ctx.roundRect?ctx.roundRect(x,y,s,s,cs*.15):ctx.rect(x,y,s,s);ctx.fill()}
+ if($("showvis").checked)runners.forEach(r=>{ctx.fillStyle=r.color;ctx.globalAlpha=.08;
+  for(const i of r.visited)ctx.fillRect((i%C)*cs,((i/C)|0)*cs,cs,cs)});
  ctx.globalAlpha=1;ctx.strokeStyle=css("--gridline");ctx.lineWidth=1;ctx.beginPath();
  for(let i=1;i<C;i++){ctx.moveTo(i*cs,0);ctx.lineTo(i*cs,w);ctx.moveTo(0,i*cs);ctx.lineTo(w,i*cs)}ctx.stroke();
  ctx.fillStyle=css("--wall");for(const i of obs)ctx.fillRect((i%C)*cs+1,((i/C)|0)*cs+1,cs-2,cs-2);
- const ctr=i=>[(i%C)*cs+cs/2,((i/C)|0)*cs+cs/2],r=cs*.32;
- let [x,y]=ctr(START);ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle=css("--bg");ctx.fill();ctx.lineWidth=2;ctx.strokeStyle=ink;ctx.stroke();
- [x,y]=ctr(GOAL);ctx.fillStyle=ink;ctx.fillRect(x-r,y-r,2*r,2*r);
- [x,y]=ctr(pawn);ctx.beginPath();ctx.arc(x,y,r,0,7);ctx.fillStyle=acc;ctx.fill()}
-function elapsed(){return running?(performance.now()-t0)/1000:finished?(t1-t0)/1000:0}
+ const line=(pts,off)=>{ctx.beginPath();pts.forEach((i,k)=>{const[x,y]=ctr(i);k?ctx.lineTo(x+off,y+off):ctx.moveTo(x+off,y+off)});ctx.stroke()};
+ ctx.lineCap="round";ctx.lineJoin="round";
+ runners.forEach((r,k)=>{const off=(k-(n-1)/2)*cs*.12;
+  ctx.strokeStyle=r.color;ctx.globalAlpha=.8;ctx.lineWidth=Math.max(2,cs*.16);ctx.setLineDash([]);
+  if(r.trail.length>1)line(r.trail,off);
+  if(r.path.length>1){ctx.globalAlpha=.9;ctx.lineWidth=Math.max(1.5,cs*.07);ctx.setLineDash([cs*.14,cs*.14]);line(r.path,off);ctx.setLineDash([])}});
+ ctx.globalAlpha=1;const rad=cs*.3;
+ let[x,y]=ctr(START);ctx.beginPath();ctx.arc(x,y,rad,0,7);ctx.fillStyle=css("--bg");ctx.fill();ctx.lineWidth=2;ctx.strokeStyle=ink;ctx.stroke();
+ [x,y]=ctr(GOAL);ctx.fillStyle=ink;ctx.fillRect(x-rad,y-rad,2*rad,2*rad);
+ runners.forEach((r,k)=>{const off=(k-(n-1)/2)*cs*.12,[px,py]=ctr(r.pawn);
+  ctx.beginPath();ctx.arc(px+off,py+off,cs*.22,0,7);ctx.fillStyle=r.color;ctx.fill();ctx.lineWidth=1.5;ctx.strokeStyle=css("--bg");ctx.stroke()});
+ if(pick){ctx.fillStyle=ink;ctx.globalAlpha=.06;ctx.fillRect(0,0,w,w);ctx.globalAlpha=1}}
+
+/* ---------- 패널 ---------- */
 function sync(){
- document.querySelectorAll(".tab").forEach(b=>{b.setAttribute("aria-pressed",b.dataset.a===sel);b.disabled=running});
- $("s-ms").textContent=st.ms.toFixed(2)+" ms";$("s-nodes").textContent=st.nodes;$("s-steps").textContent=st.steps;$("s-re").textContent=st.re+"회";
+ document.querySelectorAll("#algs input[type=checkbox]").forEach(b=>{b.disabled=running});
+ $("b-pstart").setAttribute("aria-pressed",pick==="start");$("b-pgoal").setAttribute("aria-pressed",pick==="goal");
+ $("b-start").disabled=running;$("b-rand").disabled=running;$("b-clear").disabled=running;
  $("b-sort").textContent="기준: "+SORTS[sortIdx][0];$("msg").textContent=msg;renderRank()}
+function renderLive(){const now=performance.now();
+ $("live").innerHTML=runners.length?runners.map(r=>{const el=r.done?r.t1-r.t0:r.t0?now-r.t0:0;
+  return `<tr class="${r.done&&!r.ok?"fail":""}"><td><i class="dot" style="background:${r.color}"></i>${r.name}</td><td>${r.status}</td><td>${(el/1000).toFixed(2)}</td><td>${r.st.nodes}</td><td>${r.st.ms.toFixed(2)}</td><td>${r.st.steps}</td><td>${r.st.re}</td></tr>`}).join(""):
+  `<tr class="fail"><td colspan="7" style="text-align:left">알고리즘을 하나 이상 선택하세요.</td></tr>`}
 function renderRank(){const k=SORTS[sortIdx][1];
- const ok=ranking.filter(r=>r.ok).sort((a,b)=>a[k]-b[k]),fl=ranking.filter(r=>!r.ok),rows=ok.concat(fl).slice(0,5);
- $("rank").innerHTML=rows.length?rows.map((r,i)=>`<tr class="${i===0&&r.ok?"top":r.ok?"":"fail"}"><td>${r.ok?i+1:"-"}</td><td>${r.name}${r.ok?"":" (실패)"}</td><td>${r.nodes}</td><td>${r.ms.toFixed(2)} ms</td><td>${r.steps}</td><td>${r.re}</td></tr>`).join(""):
+ const ok=ranking.filter(r=>r.ok).sort((a,b)=>a[k]-b[k]),fl=ranking.filter(r=>!r.ok),rows=ok.concat(fl).slice(0,8);
+ $("rank").innerHTML=rows.length?rows.map((r,i)=>`<tr class="${i===0&&r.ok?"top":r.ok?"":"fail"}"><td>${r.ok?i+1:"-"}</td><td><i class="dot" style="background:${r.color}"></i>${r.name}${r.ok?"":" (실패)"}</td><td>${r.nodes}</td><td>${r.ms.toFixed(2)} ms</td><td>${r.steps}</td><td>${r.re}</td></tr>`).join(""):
   `<tr class="fail"><td colspan="6" style="text-align:left">아직 기록이 없어요. 알고리즘을 실행해 보세요.</td></tr>`}
-function loop(now){
- if(running&&now-last>=STEP){last=now;step();if(!running)sync()}
- $("tm").textContent=elapsed().toFixed(2).padStart(5,"0");draw();requestAnimationFrame(loop)}
+function loop(now){const dt=Math.min(now-(lastT||now),100);lastT=now;
+ if(running)for(const r of runners){if(r.done)continue;r.acc+=dt*speeds[r.name]/1000;
+  while(r.acc>=1&&!r.done){r.acc-=1;stepR(r)}}
+ const t=running?now-tAll0:tAll1?tAll1-tAll0:0;$("tm").textContent=(t/1000).toFixed(2).padStart(5,"0");
+ draw();renderLive();requestAnimationFrame(loop)}
 
 /* ---------- 입력 ---------- */
-Object.keys(ALGOS).forEach(a=>{const b=document.createElement("button");b.className="tab";b.dataset.a=a;b.textContent=a;
- b.onclick=()=>{if(!running){sel=a;sync()}};$("tabs").appendChild(b)});
-$("b-start").onclick=start;$("b-reset").onclick=resetPawn;$("b-rand").onclick=randMap;$("b-clear").onclick=clearMap;$("b-throw").onclick=throwObs;
+ALG.forEach(([n,c])=>{const d=document.createElement("div");d.className="alg";
+ d.innerHTML=`<input type="checkbox" checked aria-label="${n} 선택" style="accent-color:${c}"><span><i class="dot" style="background:${c}"></i>${n}</span><input type="range" min="1" max="40" value="14" aria-label="${n} 이동 속도"><output>14 칸/초</output>`;
+ const[cb,,rg,out]=d.children;
+ cb.onchange=()=>{enabled[n]=cb.checked;if(!running){resetRun();sync()}};
+ rg.oninput=()=>{speeds[n]=+rg.value;out.textContent=rg.value+" 칸/초"};
+ $("algs").appendChild(d)});
+$("b-start").onclick=start;$("b-reset").onclick=resetPath;$("b-rand").onclick=randMap;$("b-clear").onclick=clearMap;$("b-throw").onclick=throwObs;
+$("b-pstart").onclick=()=>setPick("start");$("b-pgoal").onclick=()=>setPick("goal");
 $("b-sort").onclick=()=>{sortIdx=(sortIdx+1)%SORTS.length;sync()};
 $("b-rrank").onclick=()=>{ranking=[];msg="순위를 초기화했어요";sync()};
 let drag=null,lastCell=-1;
 function cellAt(e){const r=cv.getBoundingClientRect(),c=Math.floor((e.clientX-r.left)/r.width*C),rr=Math.floor((e.clientY-r.top)/r.height*R);
  return c<0||c>=C||rr<0||rr>=R?-1:idx(rr,c)}
-cv.addEventListener("pointerdown",e=>{const i=cellAt(e);if(i<0)return;cv.setPointerCapture(e.pointerId);
- drag=obs.has(i)?"del":"add";lastCell=i;toggle(i,drag);sync()});
-cv.addEventListener("pointermove",e=>{if(!drag)return;const i=cellAt(e);if(i<0||i===lastCell)return;lastCell=i;toggle(i,drag);sync()});
+cv.addEventListener("pointerdown",e=>{const i=cellAt(e);if(i<0)return;cv.setPointerCapture(e.pointerId);lastCell=i;
+ if(pick){moveMarker(pick,i);if(!running){msg=(pick==="start"?"출발":"도착")+" 지점을 바꿨어요";pick=null}sync();return}
+ if(!running&&(i===START||i===GOAL)){drag=i===START?"start":"goal";return}
+ drag=obs.has(i)?"del":"add";toggle(i,drag);sync()});
+cv.addEventListener("pointermove",e=>{if(!drag)return;const i=cellAt(e);if(i<0||i===lastCell)return;lastCell=i;
+ if(drag==="start"||drag==="goal")moveMarker(drag,i);else toggle(i,drag)});
 ["pointerup","pointercancel"].forEach(t=>cv.addEventListener(t,()=>{drag=null}));
 
-resetRun();randMap();msg="랜덤 맵이 준비됐어요 · 알고리즘을 고르고 [시작]을 누르세요";sync();requestAnimationFrame(loop);
+randMap();msg="랜덤 맵이 준비됐어요 · 알고리즘을 고르고 [시작]을 누르세요";sync();requestAnimationFrame(loop);
 </script>
 </body>
 </html>
