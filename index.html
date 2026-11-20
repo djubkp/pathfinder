@@ -5,55 +5,107 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>길찾기 알고리즘 비교 · 패스파인더</title>
 <style>
-:root{--bg:#fff;--ink:#111827;--muted:#6b7280;--line:#e5e7eb;--hair:#f3f4f6;--acc:#2563eb;--acc2:#1d4ed8;--wall:#374151;--gridbg:#fafafa;--gridline:#eef0f3;color-scheme:light dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1117;--ink:#f3f4f6;--muted:#9ca3af;--line:#2a2f3a;--hair:#1c2029;--acc:#60a5fa;--acc2:#93c5fd;--wall:#4b5563;--gridbg:#151922;--gridline:#1f2430}}
-:root[data-theme="dark"]{--bg:#0f1117;--ink:#f3f4f6;--muted:#9ca3af;--line:#2a2f3a;--hair:#1c2029;--acc:#60a5fa;--acc2:#93c5fd;--wall:#4b5563;--gridbg:#151922;--gridline:#1f2430}
+:root{--bg:#fff;--ink:#111827;--muted:#6b7280;--line:#e5e7eb;--hair:#f3f4f6;--track:#f1f2f4;--wall:#374151;--gridbg:#fafafa;--gridline:#eef0f3;
+ --c0:#2a78d6;--c1:#eb6834;--c2:#1baf7a;--c3:#eda100;color-scheme:light dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1117;--ink:#f3f4f6;--muted:#9ca3af;--line:#2a2f3a;--hair:#1c2029;--track:#1c2029;--wall:#4b5563;--gridbg:#151922;--gridline:#1f2430;--c0:#3987e5;--c1:#d95926;--c2:#199e70;--c3:#c98500}}
+:root[data-theme="dark"]{--bg:#0f1117;--ink:#f3f4f6;--muted:#9ca3af;--line:#2a2f3a;--hair:#1c2029;--track:#1c2029;--wall:#4b5563;--gridbg:#151922;--gridline:#1f2430;--c0:#3987e5;--c1:#d95926;--c2:#199e70;--c3:#c98500}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:Pretendard,-apple-system,'Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif;-webkit-text-size-adjust:100%}
-header{padding:20px 24px;border-bottom:1px solid var(--line);display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+header{padding:18px 24px;border-bottom:1px solid var(--line);display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
 h1{margin:0;font-size:20px}
 header p{margin:0;color:var(--muted);font-size:13px}
-main{display:grid;grid-template-columns:minmax(0,560px) minmax(0,1fr);gap:32px;padding:24px;max-width:1240px;margin:0 auto}
-@media (max-width:900px){main{grid-template-columns:1fr;gap:20px;padding:16px}}
-#cv{width:100%;aspect-ratio:1;display:block;border:1px solid var(--line);touch-action:none;cursor:pointer}
-.legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;font-size:12px;color:var(--muted)}
-.legend i{display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px}
-.hint{font-size:12px;color:var(--muted);margin:10px 0 0;line-height:1.5}
+main{display:grid;grid-template-columns:250px minmax(0,1fr) 440px;gap:28px;padding:24px;max-width:1560px;margin:0 auto;align-items:start}
+.left{order:1}.center{order:2}.right{order:3}
+@media (max-width:1180px){main{grid-template-columns:minmax(0,1fr);gap:22px;padding:16px}.center{order:1}.left{order:2}.right{order:3}}
+h2{margin:0 0 10px;font-size:14px}
 .lbl{font-size:12px;color:var(--muted);margin-bottom:6px}
-.alg{display:grid;grid-template-columns:22px 92px minmax(80px,1fr) 64px;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--hair);font-size:15px}
-.alg input[type=checkbox]{width:18px;height:18px;margin:0;cursor:pointer}
-.alg input[type=range]{width:100%;margin:0}
-.alg output{font-size:12px;color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
-.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px;vertical-align:0}
-.trow{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-top:18px;padding-bottom:16px;border-bottom:1px solid var(--line)}
-.big{font-size:52px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
-.big span{font-size:20px;font-weight:400;color:var(--muted);margin-left:6px}
-.chk{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center;cursor:pointer}
-.btns{display:flex;gap:8px;flex-wrap:wrap;padding:16px 0;border-bottom:1px solid var(--line)}
+.panel{padding-bottom:18px;margin-bottom:18px;border-bottom:1px solid var(--line)}
+.panel:last-child{border-bottom:0;margin-bottom:0}
+/* 왼쪽: 알고리즘 선택 */
+.alg{display:grid;grid-template-columns:20px 1fr;gap:2px 10px;align-items:start;padding:9px 0;border-bottom:1px solid var(--hair);cursor:pointer}
+.alg:last-child{border-bottom:0}
+.alg input{width:18px;height:18px;margin:1px 0 0;cursor:pointer}
+.alg b{font-size:15px;font-weight:600}
+.alg small{grid-column:2;font-size:12px;color:var(--muted);line-height:1.4}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:7px}
+.srow{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.srow output{font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;margin:4px 0 0}
+.chk{font-size:13px;color:var(--ink);display:flex;gap:8px;align-items:center;cursor:pointer}
+.col{display:flex;flex-direction:column;gap:8px}
+/* 중앙 */
+#cv{width:100%;aspect-ratio:1;display:block;border:1px solid var(--line);touch-action:none;cursor:pointer;max-width:720px;margin:0 auto}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;font-size:12px;color:var(--muted);justify-content:center}
+.legend i{display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px}
+.btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:16px}
+.hint{font-size:12px;color:var(--muted);margin:12px 0 0;line-height:1.5;text-align:center}
 button.b{font:inherit;font-size:14px;height:40px;padding:0 14px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
 button.b:hover{background:var(--hair)}
-button.b[aria-pressed="true"]{border-color:var(--acc);color:var(--acc);font-weight:600}
-button.p{background:var(--acc);border-color:var(--acc);color:#fff;font-weight:600;min-width:90px}
-button.p:hover{background:var(--acc2)}
-button.b:disabled{opacity:.5;cursor:default}
-.rh{display:flex;justify-content:space-between;align-items:center;margin:18px 0 8px}
-h2{margin:0;font-size:15px}
-button.s{height:30px;font-size:12px;padding:0 12px;border-radius:6px}
+button.b[aria-pressed="true"]{border-color:var(--ink);font-weight:600}
+button.p{background:var(--ink);border-color:var(--ink);color:var(--bg);font-weight:600;min-width:96px}
+button.p:hover{background:var(--ink);opacity:.88}
+button.b:disabled{opacity:.45;cursor:default}
+button.s{height:28px;font-size:12px;padding:0 10px;border-radius:6px}
+/* 오른쪽 */
+.big{font-size:48px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.big span{font-size:18px;font-weight:400;color:var(--muted);margin-left:6px}
+.rh{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.rh h2{margin:0}
 .tw{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums;min-width:460px}
-th{font-size:11px;font-weight:400;color:var(--muted);text-align:right;padding:6px 6px;border-bottom:1px solid var(--line)}
-td{text-align:right;padding:8px 6px;border-bottom:1px solid var(--hair)}
-th:nth-child(-n+2),td:nth-child(-n+2){text-align:left}
+table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+th{font-size:11px;font-weight:400;color:var(--muted);text-align:right;padding:5px 5px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{text-align:right;padding:7px 5px;border-bottom:1px solid var(--hair);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
 tr.top td{font-weight:600}
 tr.fail td{color:var(--muted)}
+.rank th:nth-child(2),.rank td:nth-child(2){text-align:left}
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:18px 20px}
+@media (max-width:560px){.charts{grid-template-columns:1fr}}
+.ch h3{margin:0 0 8px;font-size:12px;font-weight:600}
+.ch h3 span{font-weight:400;color:var(--muted);margin-left:4px}
+.cr{display:grid;grid-template-columns:62px 1fr;gap:2px 8px;align-items:center;margin-bottom:8px;font-size:12px}
+.cn{display:flex;align-items:center;white-space:nowrap}
+.cn .dot{margin-right:5px;width:8px;height:8px}
+.tr{height:12px;background:var(--track);border-radius:0 4px 4px 0;position:relative}
+.ba{height:100%;border-radius:0 4px 4px 0;min-width:2px}
+.cv{grid-column:2;font-size:12px;font-variant-numeric:tabular-nums;color:var(--ink)}
+.cv.best{font-weight:700}
+.cv.mu{color:var(--muted)}
+.empty{font-size:13px;color:var(--muted);margin:0 0 4px}
 .msg{font-size:13px;color:var(--muted);margin:14px 0 0;min-height:20px}
 </style>
 </head>
 <body>
 <header><h1>길찾기 알고리즘 비교</h1><p>같은 맵, 같은 장애물에서 여러 알고리즘을 동시에 실행해 비교</p></header>
 <main>
- <section>
+ <!-- 왼쪽: 알고리즘 선택 / 설정 -->
+ <aside class="left">
+  <div class="panel">
+   <h2>알고리즘 선택</h2>
+   <div id="algs"></div>
+  </div>
+  <div class="panel">
+   <h2>이동 속도</h2>
+   <div class="srow"><span class="lbl" style="margin:0">모든 알고리즘 공통</span><output id="spv">14 칸/초</output></div>
+   <input type="range" id="speed" min="1" max="40" value="14" aria-label="전체 이동 속도">
+  </div>
+  <div class="panel">
+   <h2>출발 · 도착 지점</h2>
+   <div class="col">
+    <button class="b" id="b-pstart" aria-pressed="false">출발 지점 선택</button>
+    <button class="b" id="b-pgoal" aria-pressed="false">도착 지점 선택</button>
+   </div>
+   <p class="hint" style="text-align:left">버튼을 누른 뒤 격자를 클릭하거나, 격자의 출발·도착 표시를 끌어서 옮길 수 있어요.</p>
+  </div>
+  <div class="panel">
+   <h2>보기</h2>
+   <label class="chk"><input type="checkbox" id="showvis" checked>탐색 영역 표시</label>
+  </div>
+ </aside>
+
+ <!-- 중앙: 길찾기 화면 -->
+ <section class="center">
   <canvas id="cv" aria-label="길찾기 격자 맵"></canvas>
   <div class="legend">
    <span><i style="border:2px solid var(--ink);border-radius:50%"></i>출발</span>
@@ -63,43 +115,53 @@ tr.fail td{color:var(--muted)}
    <span><i style="height:0;border-top:2px dashed var(--muted);vertical-align:3px"></i>예상 경로</span>
    <span><i style="background:var(--muted);opacity:.25"></i>탐색 영역</span>
   </div>
-  <p class="hint">격자를 클릭하거나 드래그하면 장애물을 놓고 지울 수 있어요. 출발·도착 지점은 오른쪽 버튼으로 고르거나, 격자의 출발·도착 표시를 끌어서 옮길 수 있어요.</p>
- </section>
- <section>
-  <div class="lbl">알고리즘 (여러 개 선택 · 알고리즘마다 이동 속도 조절)</div>
-  <div id="algs"></div>
-  <div class="trow">
-   <div><div class="lbl">전체 경과 시간</div><div class="big"><b id="tm" style="font-weight:600">00.00</b><span>초</span></div></div>
-   <label class="chk"><input type="checkbox" id="showvis" checked>탐색 영역 표시</label>
-  </div>
   <div class="btns">
    <button class="b p" id="b-start">시작</button>
    <button class="b" id="b-reset">경로 리셋</button>
    <button class="b" id="b-rand">랜덤 맵</button>
    <button class="b" id="b-clear">맵 비우기</button>
    <button class="b" id="b-throw">경로 방해</button>
-   <button class="b" id="b-pstart" aria-pressed="false">출발 지점 선택</button>
-   <button class="b" id="b-pgoal" aria-pressed="false">도착 지점 선택</button>
   </div>
-  <div class="rh"><h2>실행 현황</h2></div>
-  <div class="tw"><table>
-   <thead><tr><th>알고리즘</th><th>상태</th><th>시간(초)</th><th>탐색 노드</th><th>연산(ms)</th><th>이동</th><th>재탐색</th></tr></thead>
-   <tbody id="live"></tbody>
-  </table></div>
-  <div class="rh"><h2>순위</h2><div style="display:flex;gap:6px"><button class="b s" id="b-rrank">순위 초기화</button><button class="b s" id="b-sort"></button></div></div>
-  <div class="tw"><table>
-   <thead><tr><th>순위</th><th>알고리즘</th><th>탐색 노드</th><th>연산 시간</th><th>이동</th><th>재탐색</th></tr></thead>
-   <tbody id="rank"></tbody>
-  </table></div>
-  <p class="msg" id="msg"></p>
+  <p class="hint">격자를 클릭하거나 드래그하면 장애물을 놓고 지울 수 있어요.</p>
+  <p class="msg" id="msg" style="text-align:center"></p>
  </section>
+
+ <!-- 오른쪽: 결과 -->
+ <aside class="right">
+  <div class="panel">
+   <div class="lbl">전체 경과 시간</div>
+   <div class="big"><b id="tm" style="font-weight:600">00.00</b><span>초</span></div>
+  </div>
+  <div class="panel">
+   <h2>실행 현황</h2>
+   <div class="tw"><table>
+    <thead><tr><th>알고리즘</th><th>상태</th><th>시간(초)</th><th>이동</th><th>재탐색</th></tr></thead>
+    <tbody id="live"></tbody>
+   </table></div>
+  </div>
+  <div class="panel">
+   <h2>측정 결과 그래프 <span style="font-weight:400;color:var(--muted);font-size:12px">· 짧을수록 좋음</span></h2>
+   <p class="empty" id="chart-empty">알고리즘이 도착하면 결과가 여기에 쌓여요.</p>
+   <div class="charts" id="charts"></div>
+  </div>
+  <div class="panel">
+   <div class="rh"><h2>순위 기록</h2><div style="display:flex;gap:6px"><button class="b s" id="b-rrank">순위 초기화</button><button class="b s" id="b-sort"></button></div></div>
+   <div class="tw"><table class="rank">
+    <thead><tr><th>순위</th><th>알고리즘</th><th>탐색 노드</th><th>연산 시간</th><th>이동</th><th>재탐색</th></tr></thead>
+    <tbody id="rank"></tbody>
+   </table></div>
+  </div>
+ </aside>
 </main>
 <script>
 const R=20,C=20,N=R*C,DENS=.22;
 const idx=(r,c)=>r*C+c;
 let START=idx(10,0),GOAL=idx(10,19);
-const ALG=[["BFS","#2563eb"],["DFS","#8b5cf6"],["Dijkstra","#f59e0b"],["A*","#10b981"]];
+/* 이름, 색 변수 번호(CSS --c0~--c3), 설명 */
+const ALG=[["BFS",0,"모든 방향을 한 칸씩 넓혀가며 탐색"],["DFS",1,"한 방향으로 끝까지 파고들며 탐색"],["Dijkstra",2,"이동 비용이 가장 적은 칸부터 탐색"],["A*",3,"목표까지 거리를 추정해 우선 탐색"]];
+const CI=Object.fromEntries(ALG.map(([n,i])=>[n,i]));
 const SORTS=[["탐색 노드","nodes"],["연산 시간","ms"],["이동 칸수","steps"]];
+const METRICS=[["탐색 노드","nodes",v=>String(v)],["연산 시간","ms",v=>v.toFixed(2)+" ms"],["이동 칸수","steps",v=>String(v)],["소요 시간","sec",v=>v.toFixed(2)+" 초"]];
 const $=id=>document.getElementById(id);
 const cv=$("cv"),ctx=cv.getContext("2d");
 
@@ -130,12 +192,12 @@ const ALGOS={BFS:bfs,DFS:dfs,Dijkstra:(s,g)=>best(s,g,false),"A*":(s,g)=>best(s,
 
 /* ---------- 상태 ---------- */
 const enabled={BFS:true,DFS:true,Dijkstra:true,"A*":true};
-const speeds={BFS:14,DFS:14,Dijkstra:14,"A*":14};
-let runners=[],running=false,sortIdx=0,ranking=[],pick=null,tAll0=0,tAll1=0,lastT=0;
+let speed=14;                       // 모든 알고리즘 공통 이동 속도 (칸/초)
+let runners=[],running=false,sortIdx=0,ranking=[],results={},pick=null,tAll0=0,tAll1=0,lastT=0;
 let msg="알고리즘을 고르고 [시작]을 누르세요 · 여러 개를 동시에 선택할 수 있어요";
 
-function resetRun(){running=false;tAll0=tAll1=0;
- runners=ALG.filter(([n])=>enabled[n]).map(([n,c])=>({name:n,color:c,pawn:START,path:[],visited:[],trail:[START],
+function resetRun(){running=false;tAll0=tAll1=0;results={};
+ runners=ALG.filter(([n])=>enabled[n]).map(([n])=>({name:n,ci:CI[n],pawn:START,path:[],visited:[],trail:[START],
   st:{ms:0,nodes:0,steps:0,re:0},status:"대기",done:false,ok:false,t0:0,t1:0,acc:0}))}
 function plan(r,isRe){const t=performance.now(),res=ALGOS[r.name](r.pawn,GOAL);
  r.st.ms+=performance.now()-t;r.st.nodes+=res.visited.length;if(isRe)r.st.re++;r.visited=res.visited;
@@ -148,9 +210,10 @@ function start(){if(running)return;pick=null;
 function stepR(r){if(r.path.length>1){r.path.shift();r.pawn=r.path[0];r.trail.push(r.pawn);r.st.steps++}
  if(r.pawn===GOAL)finishR(r,true)}
 function finishR(r,ok){r.done=true;r.ok=ok;r.status=ok?"도착":"실패";r.t1=performance.now();
- ranking.push({name:r.name,color:r.color,ok,...r.st});if(ranking.length>24)ranking.shift();
- if(runners.every(x=>x.done)){running=false;tAll1=performance.now();msg="모든 알고리즘이 끝났어요 · 아래 순위를 확인해 보세요"}
- renderRank();sync()}
+ const rec={name:r.name,ci:r.ci,ok,...r.st,sec:(r.t1-r.t0)/1000};
+ results[r.name]=rec;ranking.push(rec);if(ranking.length>24)ranking.shift();
+ if(runners.every(x=>x.done)){running=false;tAll1=performance.now();msg="모든 알고리즘이 끝났어요 · 오른쪽 그래프와 순위를 확인해 보세요"}
+ sync()}
 
 /* ---------- 맵 조작 ---------- */
 function toggle(i,force){if(i===START||i===GOAL||runners.some(r=>r.pawn===i))return;
@@ -174,10 +237,11 @@ function setPick(w){if(running){msg="실행 중에는 바꿀 수 없어요";sync
 function css(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim()}
 function draw(){const w=cv.clientWidth,dpr=window.devicePixelRatio||1;
  if(cv.width!==Math.round(w*dpr)){cv.width=cv.height=Math.round(w*dpr)}
- ctx.setTransform(dpr,0,0,dpr,0,0);const cs=w/C,ink=css("--ink"),n=runners.length;
+ ctx.setTransform(dpr,0,0,dpr,0,0);const cs=w/C,ink=css("--ink"),bg=css("--bg"),n=runners.length;
+ const col=[0,1,2,3].map(i=>css("--c"+i));
  const ctr=i=>[(i%C)*cs+cs/2,((i/C)|0)*cs+cs/2];
  ctx.fillStyle=css("--gridbg");ctx.fillRect(0,0,w,w);
- if($("showvis").checked)runners.forEach(r=>{ctx.fillStyle=r.color;ctx.globalAlpha=.08;
+ if($("showvis").checked)runners.forEach(r=>{ctx.fillStyle=col[r.ci];ctx.globalAlpha=.1;
   for(const i of r.visited)ctx.fillRect((i%C)*cs,((i/C)|0)*cs,cs,cs)});
  ctx.globalAlpha=1;ctx.strokeStyle=css("--gridline");ctx.lineWidth=1;ctx.beginPath();
  for(let i=1;i<C;i++){ctx.moveTo(i*cs,0);ctx.lineTo(i*cs,w);ctx.moveTo(0,i*cs);ctx.lineTo(w,i*cs)}ctx.stroke();
@@ -185,47 +249,58 @@ function draw(){const w=cv.clientWidth,dpr=window.devicePixelRatio||1;
  const line=(pts,off)=>{ctx.beginPath();pts.forEach((i,k)=>{const[x,y]=ctr(i);k?ctx.lineTo(x+off,y+off):ctx.moveTo(x+off,y+off)});ctx.stroke()};
  ctx.lineCap="round";ctx.lineJoin="round";
  runners.forEach((r,k)=>{const off=(k-(n-1)/2)*cs*.12;
-  ctx.strokeStyle=r.color;ctx.globalAlpha=.8;ctx.lineWidth=Math.max(2,cs*.16);ctx.setLineDash([]);
+  ctx.strokeStyle=col[r.ci];ctx.globalAlpha=.85;ctx.lineWidth=Math.max(2,cs*.16);ctx.setLineDash([]);
   if(r.trail.length>1)line(r.trail,off);
   if(r.path.length>1){ctx.globalAlpha=.9;ctx.lineWidth=Math.max(1.5,cs*.07);ctx.setLineDash([cs*.14,cs*.14]);line(r.path,off);ctx.setLineDash([])}});
  ctx.globalAlpha=1;const rad=cs*.3;
- let[x,y]=ctr(START);ctx.beginPath();ctx.arc(x,y,rad,0,7);ctx.fillStyle=css("--bg");ctx.fill();ctx.lineWidth=2;ctx.strokeStyle=ink;ctx.stroke();
+ let[x,y]=ctr(START);ctx.beginPath();ctx.arc(x,y,rad,0,7);ctx.fillStyle=bg;ctx.fill();ctx.lineWidth=2;ctx.strokeStyle=ink;ctx.stroke();
  [x,y]=ctr(GOAL);ctx.fillStyle=ink;ctx.fillRect(x-rad,y-rad,2*rad,2*rad);
  runners.forEach((r,k)=>{const off=(k-(n-1)/2)*cs*.12,[px,py]=ctr(r.pawn);
-  ctx.beginPath();ctx.arc(px+off,py+off,cs*.22,0,7);ctx.fillStyle=r.color;ctx.fill();ctx.lineWidth=1.5;ctx.strokeStyle=css("--bg");ctx.stroke()});
+  ctx.beginPath();ctx.arc(px+off,py+off,cs*.22,0,7);ctx.fillStyle=col[r.ci];ctx.fill();ctx.lineWidth=1.5;ctx.strokeStyle=bg;ctx.stroke()});
  if(pick){ctx.fillStyle=ink;ctx.globalAlpha=.06;ctx.fillRect(0,0,w,w);ctx.globalAlpha=1}}
 
-/* ---------- 패널 ---------- */
+/* ---------- 패널 / 그래프 ---------- */
+const dotHtml=ci=>`<i class="dot" style="background:var(--c${ci})"></i>`;
 function sync(){
- document.querySelectorAll("#algs input[type=checkbox]").forEach(b=>{b.disabled=running});
+ document.querySelectorAll("#algs input").forEach(b=>{b.disabled=running});
  $("b-pstart").setAttribute("aria-pressed",pick==="start");$("b-pgoal").setAttribute("aria-pressed",pick==="goal");
  $("b-start").disabled=running;$("b-rand").disabled=running;$("b-clear").disabled=running;
- $("b-sort").textContent="기준: "+SORTS[sortIdx][0];$("msg").textContent=msg;renderRank()}
+ $("b-sort").textContent="기준: "+SORTS[sortIdx][0];$("msg").textContent=msg;renderRank();renderCharts()}
 function renderLive(){const now=performance.now();
  $("live").innerHTML=runners.length?runners.map(r=>{const el=r.done?r.t1-r.t0:r.t0?now-r.t0:0;
-  return `<tr class="${r.done&&!r.ok?"fail":""}"><td><i class="dot" style="background:${r.color}"></i>${r.name}</td><td>${r.status}</td><td>${(el/1000).toFixed(2)}</td><td>${r.st.nodes}</td><td>${r.st.ms.toFixed(2)}</td><td>${r.st.steps}</td><td>${r.st.re}</td></tr>`}).join(""):
-  `<tr class="fail"><td colspan="7" style="text-align:left">알고리즘을 하나 이상 선택하세요.</td></tr>`}
+  return `<tr class="${r.done&&!r.ok?"fail":""}"><td>${dotHtml(r.ci)}${r.name}</td><td>${r.status}</td><td>${(el/1000).toFixed(2)}</td><td>${r.st.steps}</td><td>${r.st.re}</td></tr>`}).join(""):
+  `<tr class="fail"><td colspan="5">알고리즘을 하나 이상 선택하세요.</td></tr>`}
 function renderRank(){const k=SORTS[sortIdx][1];
  const ok=ranking.filter(r=>r.ok).sort((a,b)=>a[k]-b[k]),fl=ranking.filter(r=>!r.ok),rows=ok.concat(fl).slice(0,8);
- $("rank").innerHTML=rows.length?rows.map((r,i)=>`<tr class="${i===0&&r.ok?"top":r.ok?"":"fail"}"><td>${r.ok?i+1:"-"}</td><td><i class="dot" style="background:${r.color}"></i>${r.name}${r.ok?"":" (실패)"}</td><td>${r.nodes}</td><td>${r.ms.toFixed(2)} ms</td><td>${r.steps}</td><td>${r.re}</td></tr>`).join(""):
-  `<tr class="fail"><td colspan="6" style="text-align:left">아직 기록이 없어요. 알고리즘을 실행해 보세요.</td></tr>`}
+ $("rank").innerHTML=rows.length?rows.map((r,i)=>`<tr class="${i===0&&r.ok?"top":r.ok?"":"fail"}"><td>${r.ok?i+1:"-"}</td><td>${dotHtml(r.ci)}${r.name}${r.ok?"":" (실패)"}</td><td>${r.nodes}</td><td>${r.ms.toFixed(2)} ms</td><td>${r.steps}</td><td>${r.re}</td></tr>`).join(""):
+  `<tr class="fail"><td colspan="6">아직 기록이 없어요. 알고리즘을 실행해 보세요.</td></tr>`}
+function renderCharts(){const any=ALG.some(([n])=>results[n]);
+ $("chart-empty").style.display=any?"none":"block";
+ $("charts").innerHTML=any?METRICS.map(([t,k,f])=>{
+  const vals=ALG.filter(([n])=>results[n]&&results[n].ok).map(([n])=>results[n][k]);
+  const max=Math.max(...vals,0)||1,min=Math.min(...vals);
+  const rows=ALG.map(([n,ci])=>{const r=results[n],name=`<span class="cn">${dotHtml(ci)}${n}</span>`;
+   if(!r)return `<div class="cr">${name}<div class="tr"></div><span class="cv mu">-</span></div>`;
+   if(!r.ok)return `<div class="cr">${name}<div class="tr"></div><span class="cv mu">실패</span></div>`;
+   const v=r[k],w=Math.max(v/max*100,2);
+   return `<div class="cr" title="${n} · ${t}: ${f(v)}">${name}<div class="tr"><div class="ba" style="width:${w}%;background:var(--c${ci})"></div></div><span class="cv ${v===min?"best":""}">${f(v)}</span></div>`}).join("");
+  return `<div class="ch"><h3>${t}</h3>${rows}</div>`}).join(""):""}
 function loop(now){const dt=Math.min(now-(lastT||now),100);lastT=now;
- if(running)for(const r of runners){if(r.done)continue;r.acc+=dt*speeds[r.name]/1000;
+ if(running)for(const r of runners){if(r.done)continue;r.acc+=dt*speed/1000;
   while(r.acc>=1&&!r.done){r.acc-=1;stepR(r)}}
  const t=running?now-tAll0:tAll1?tAll1-tAll0:0;$("tm").textContent=(t/1000).toFixed(2).padStart(5,"0");
  draw();renderLive();requestAnimationFrame(loop)}
 
 /* ---------- 입력 ---------- */
-ALG.forEach(([n,c])=>{const d=document.createElement("div");d.className="alg";
- d.innerHTML=`<input type="checkbox" checked aria-label="${n} 선택" style="accent-color:${c}"><span><i class="dot" style="background:${c}"></i>${n}</span><input type="range" min="1" max="40" value="14" aria-label="${n} 이동 속도"><output>14 칸/초</output>`;
- const[cb,,rg,out]=d.children;
- cb.onchange=()=>{enabled[n]=cb.checked;if(!running){resetRun();sync()}};
- rg.oninput=()=>{speeds[n]=+rg.value;out.textContent=rg.value+" 칸/초"};
- $("algs").appendChild(d)});
+ALG.forEach(([n,ci,desc])=>{const l=document.createElement("label");l.className="alg";
+ l.innerHTML=`<input type="checkbox" checked aria-label="${n} 선택" style="accent-color:var(--c${ci})"><b>${dotHtml(ci)}${n}</b><small>${desc}</small>`;
+ l.firstElementChild.onchange=e=>{enabled[n]=e.target.checked;if(!running){resetRun();sync()}};
+ $("algs").appendChild(l)});
+$("speed").oninput=e=>{speed=+e.target.value;$("spv").textContent=speed+" 칸/초"};
 $("b-start").onclick=start;$("b-reset").onclick=resetPath;$("b-rand").onclick=randMap;$("b-clear").onclick=clearMap;$("b-throw").onclick=throwObs;
 $("b-pstart").onclick=()=>setPick("start");$("b-pgoal").onclick=()=>setPick("goal");
 $("b-sort").onclick=()=>{sortIdx=(sortIdx+1)%SORTS.length;sync()};
-$("b-rrank").onclick=()=>{ranking=[];msg="순위를 초기화했어요";sync()};
+$("b-rrank").onclick=()=>{ranking=[];msg="순위 기록을 초기화했어요";sync()};
 let drag=null,lastCell=-1;
 function cellAt(e){const r=cv.getBoundingClientRect(),c=Math.floor((e.clientX-r.left)/r.width*C),rr=Math.floor((e.clientY-r.top)/r.height*R);
  return c<0||c>=C||rr<0||rr>=R?-1:idx(rr,c)}
